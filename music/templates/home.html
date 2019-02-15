@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>iTunes Search</title>
+    <script src = "https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function( ) {
+            $("form").submit(function() {
+                $("#results").html(`<img src = "https://thumbs.gfycat.com/FaithfulDeafeningBullmastiff-small.gif"/>`)
+                $.post(
+                    $(this).attr("action"),
+                    $(this).serialize(),
+                    function(res) {
+                        var html_string = "";
+                        if (res.results.length !== 0) {
+                            html_string = `<video controls src = '${res.results[0].previewUrl}'></video>`;
+                        }
+                        else {
+                            html_string = "Not Found";
+                        }
+                        $("#results").html(html_string);
+                    }, "json");
+                    return false;
+                }
+            );
+        });
+    </script>
+    <style>
+        body {
+            margin: auto;
+        }
+        #wrapper {
+            text-align: center;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        img {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id = "wrapper">
+        <h1>iTunes Video Search</h1>
+        <form action = "/find" method = "post">
+            {% csrf_token %}
+            <label for = "artist">Enter a music artist's name:</label>
+            <input id = "artist" name = "artist" type = "search"/>
+            <input type = "submit" value = "search">
+        </form>
+        <div id = "results"></div>
+    </div>
+</body>
+</html>
